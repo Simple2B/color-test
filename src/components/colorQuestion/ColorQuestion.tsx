@@ -15,18 +15,33 @@ export const ColorQuestion = ({ handleQuestionShowed, setVoteResultReceived}: IC
 
 
   useEffect(() => {
-    fetch(`/api/displayData`)
+    const abortController = new AbortController();
+    fetch(`/api/displayData`, { signal: abortController.signal })
+      .then(res => {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res;
+      })
       .then(res => res.json())
       .then(data=> {
         setData(data.data);
-        setColorsLoaded(true);
+        setColorsLoaded(true);        
       })
       .catch(err => {
+        console.log(err);
+        if(err.name === 'AbortError') {
+          return;
+        }
         setError({
           error: true,
           message: err.message
         });
       });
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
   
 
