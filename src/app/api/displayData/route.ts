@@ -4,7 +4,6 @@ import { JWT } from 'google-auth-library';
 
 
 export async function GET(req: Request, res: Response) {
-  console.log('hello');
 
   const serviceAccountAuth = new JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -20,9 +19,8 @@ export async function GET(req: Request, res: Response) {
     await doc.loadInfo();
 
     const sheet = doc.sheetsByIndex[0];
-    console.log({sheet});
-    const rows = await sheet.getRows();
-    
+
+    const rows = await sheet.getRows();    
     
     const raw_data = rows[0]._rawData;
     const header_values = sheet.headerValues;
@@ -31,15 +29,6 @@ export async function GET(req: Request, res: Response) {
       return row._rawData;
     });
 
-
-    const results = header_values.map((result, index) => {
-      const count = raw_data[index];
-      console.log(count);
-      return {
-        value: result,
-        count: count,
-      };
-    });
 
     const rawsDataFormatted = raws_data.map(row => row.map((item, index) => index === 1 ? parseInt(item) : item));
 

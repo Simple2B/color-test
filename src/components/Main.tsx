@@ -24,7 +24,7 @@ export const Main = (props: Props) => {
     const [error, setError] = useState<IError>();
     const [isColorChoosingResultRecived, setColorChoosingResultRecived] = useState(false);
     
-    const [data, setData] = useState<IReseivedData>();
+    const [data, setData] = useState<IData>();
   
   
     const handleClick = async (id: string, color: string) => {
@@ -41,16 +41,15 @@ export const Main = (props: Props) => {
             error: true,
             message: err.message
           });
-        })   
-     
+        })        
     };
   
     useEffect(() => {
       const response = fetch(`/api/displayData`)
       .then(res => res.json())
       .then(data=> {
-        setData(data);
-        console.log(data)
+        setData(data.data);
+        console.log(data.data)
       })
       .catch(err => {
         setError({
@@ -67,12 +66,6 @@ export const Main = (props: Props) => {
             What is your favorite color?
           </p>
   
-          <button 
-                  className='text-white bg-gradient-to-br w-32 from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2' 
-                  onClick={()=>{handleClick('2', "Orange")}}>
-                    2
-                </button>
-  
           {isColorChoosingResultRecived && ( <p>Thank you</p>) }      
   
           <div className='w-full flex justify-center'>
@@ -80,13 +73,13 @@ export const Main = (props: Props) => {
               (<div className='w-full flex justify-evenly flex-wrap'>
                 <button 
                   className='text-white bg-gradient-to-br w-32 from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2' 
-                  onClick={()=>{handleClick(data?.data?.Index, data?.data?.Color1)}}>
-                    {data?.data?.Color1}
+                  onClick={()=>{handleClick(data?.Index, data?.Color1)}}>
+                    {data?.Color1}
                 </button>
                 <button 
                   className='text-white bg-gradient-to-br w-32 from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2' 
-                  onClick={()=>{handleClick(data?.data?.Index,  data?.data?.Color2)}}>
-                    {data?.data?.Color2}
+                  onClick={()=>{handleClick(data?.Index,  data?.Color2)}}>
+                    {data?.Color2}
                 </button>
               </div>)
               ): 
@@ -99,7 +92,10 @@ export const Main = (props: Props) => {
               </div>
             }
           </div>
-  
+
+          {error && (
+            <p>{error.message}</p>
+          )}  
           
         </div>
       </section>

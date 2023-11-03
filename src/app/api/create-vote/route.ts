@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library';
 
@@ -7,8 +7,6 @@ export async function GET(req: NextApiRequest, res: Response) {
   const params = new URLSearchParams(req.url?.split("?")?.[1]);
   const id = params.get('id');
   const color = params.get('color');
-
-  console.log(id, color);
 
   const serviceAccountAuth = new JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -20,33 +18,26 @@ export async function GET(req: NextApiRequest, res: Response) {
 
   const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID ?? '',serviceAccountAuth);
 
-
   try {
     if (!id || !color) {
       throw new Error('Missing id');
     }
-
        
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
     
     const rows = await sheet.getRows();
 
-    const rowToUpdate = rows[id-1];
+    const rowToUpdate = rows[parseInt(id)-1];
     const rowSelectedValue = rowToUpdate.get('Selected');
-    console.log(rowSelectedValue);
     
     rowToUpdate.set('Selected', Number(rowSelectedValue) + 1); 
-    await rows[id-1].save();
+    await rows[parseInt(id)-1].save();
 
     const outputSheet = doc.sheetsByTitle['Output'];
     const outputRows = await outputSheet.getRows();
 
-
-    const header_values = outputSheet.headerValues;
-
-
-    const selectedColorRaw = outputRows.filter((row, index) => {
+    const selectedColorRaw = outputRows.filter((row) => {
       if(row.get('Color') === color){
         console.log(row);
         row.set('Chosen', Number(row.get('Chosen')) + 1);
@@ -54,11 +45,14 @@ export async function GET(req: NextApiRequest, res: Response) {
         return true;
       }        
     });
-  
 
-    console.log(selectedColorRaw);
-    
-  //   //TODO: add new raw if color didn't exist
+    if(selectedColorRaw.length === 0) {
+      const newRaw = await outputSheet.addRow({
+        Color: color,
+        Chosen: 1,
+      });
+      newRaw.save();
+    }
 
     return NextResponse.json({ message: 'A ok!'});
 
