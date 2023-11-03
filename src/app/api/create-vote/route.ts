@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { NextApiRequest } from "next";
-import { GoogleSpreadsheet } from 'google-spreadsheet'
+import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
 export async function GET(req: NextApiRequest, res: Response) {
@@ -39,7 +39,6 @@ export async function GET(req: NextApiRequest, res: Response) {
 
     const selectedColorRaw = outputRows.filter((row) => {
       if(row.get('Color') === color){
-        console.log(row);
         row.set('Chosen', Number(row.get('Chosen')) + 1);
         row.save();
         return true;

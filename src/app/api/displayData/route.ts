@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleSpreadsheet } from 'google-spreadsheet'
+import { GoogleSpreadsheet, GoogleSpreadsheetRow } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
 
@@ -20,21 +20,18 @@ export async function GET(req: Request, res: Response) {
 
     const sheet = doc.sheetsByIndex[0];
 
-    const rows = await sheet.getRows();    
-    
-    const raw_data = rows[0]._rawData;
-    const header_values = sheet.headerValues;
+    const rows:GoogleSpreadsheetRow[] = await sheet.getRows();    
+        
+    const rawData:GoogleSpreadsheetRow = rows[0]._rawData;
+    const headerValues = sheet.headerValues;
 
-    const raws_data = rows.map((row) => {
-      return row._rawData;
+    const rawsDataFormatted = rows.map((row) => {
+      return row['_rawData'];
     });
 
+    const minRow = rawsDataFormatted.reduce((min: any, row: any) => row[1] < min[1] ? row : min, rawsDataFormatted[0]);
 
-    const rawsDataFormatted = raws_data.map(row => row.map((item, index) => index === 1 ? parseInt(item) : item));
-
-    const minRow = rawsDataFormatted.reduce((min, row) => row[1] < min[1] ? row : min, rawsDataFormatted[0]);
-
-    const formattedResult = header_values.reduce((acc: Record<string, any>, data: string, index: number) => {
+    const formattedResult = headerValues.reduce((acc: Record<string, any>, data: string, index: number) => {
       acc[data] = minRow[index];
       return acc;
     }, {});
@@ -46,7 +43,7 @@ export async function GET(req: Request, res: Response) {
     rowToUpdate.set('Appeared', Number(rowAppearedValue) + 1); 
     await rows[minRowIndex].save();
    
-    return NextResponse.json({ message: 'A ok!', data: formattedResult })
+    return NextResponse.json({ message: 'A ok!', data: formattedResult });
 
     
   } catch (error) {
