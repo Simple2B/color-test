@@ -20,9 +20,9 @@ export async function GET(req: Request, res: Response) {
 
     const sheet = doc.sheetsByIndex[0];
 
-    const rows:GoogleSpreadsheetRow[] = await sheet.getRows();    
-        
-    const rawData:GoogleSpreadsheetRow = rows[0]._rawData;
+    const rows:GoogleSpreadsheetRow[] = await sheet.getRows();  
+    
+            
     const headerValues = sheet.headerValues;
 
     const rawsDataFormatted = rows.map((row) => {
