@@ -6,3 +6,8 @@ services:
       - 127.0.0.1:3002:3000
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.color-test.rule=Host(color-test.simple2b.net)"
+      - "traefik.http.routers.color-test.tls=true"
+      - "traefik.http.routers.color-test.tls.certresolver=myresolver"
