@@ -8,6 +8,6 @@ services:
       - .env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.color-test.rule=Host(color-test.simple2b.net)"
+      - "traefik.http.routers.color-test.rule=Host(`color-test.simple2b.net`)"
       - "traefik.http.routers.color-test.tls=true"
       - "traefik.http.routers.color-test.tls.certresolver=myresolver"
