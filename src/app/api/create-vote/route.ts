@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { NextApiRequest } from "next";
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
-export async function GET(req: NextApiRequest, res: Response) {
+export async function GET(req: Request, res: Response) {
   const params = new URLSearchParams(req.url?.split("?")?.[1]);
   const id = params.get('id');
   const color = params.get('color');
