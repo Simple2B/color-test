@@ -37,6 +37,8 @@ export async function GET(req: Request, res: Response) {
       return acc;
     }, {});
 
+    formattedResult.timestamp = new Date().toISOString();
+
     const minRowIndex = minRow[0]-1;
     const rowToUpdate = rows[minRowIndex];
     const rowAppearedValue = rowToUpdate.get('Appeared');
@@ -52,3 +54,5 @@ export async function GET(req: Request, res: Response) {
     return NextResponse.json(error);
   }
 }
+
+export const dynamic = "force-dynamic";

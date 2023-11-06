@@ -16,7 +16,7 @@ export const ColorQuestion = ({ handleQuestionShowed, setVoteResultReceived}: IC
 
   useEffect(() => {
     const abortController = new AbortController();
-    fetch(`/api/displayData`, { signal: abortController.signal })
+    fetch(`/api/displayData?noCache=${new Date().getTime()}`, { signal: abortController.signal })
       .then(res => {
         if (!res.ok) {
           throw Error(res.statusText);
