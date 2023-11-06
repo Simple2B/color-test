@@ -1,5 +1,6 @@
-import Image from 'next/image';
 import { Main } from '../components/Main';
+
+export const revalidate = 60;
 
 export default function Home() {
   return (
