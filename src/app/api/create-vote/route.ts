@@ -3,9 +3,11 @@ import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
 export async function GET(req: Request, res: Response) {
+  
   const params = new URLSearchParams(req.url?.split("?")?.[1]);
   const id = params.get('id');
   const color = params.get('color');
+  console.log('get votes', id, color,);
 
   const serviceAccountAuth = new JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,

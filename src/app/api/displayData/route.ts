@@ -4,6 +4,7 @@ import { JWT } from 'google-auth-library';
 
 
 export async function GET(req: Request, res: Response) {
+  console.log('display data');
 
   const serviceAccountAuth = new JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
